@@ -6,5 +6,7 @@ certifi
 scikit-learn
 dill
 pyaml
+catboost
+xgboost
 
 # -e .

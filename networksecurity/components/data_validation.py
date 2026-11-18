@@ -15,7 +15,7 @@ class DataValidation:
     """Validates ingested data against the schema and checks for train/test drift."""
 
     def __init__(self, data_ingestion_artifact: DataIngestionArtifact, data_validation_config: DataValidationConfig):
-        """Store the ingestion artifact and validation config, and load the schema."""
+        """Stores the ingestion artifact and validation config, and load the schema."""
         try:
             self.data_ingestion_artifact = data_ingestion_artifact
             self.data_validation_config = data_validation_config
@@ -23,12 +23,12 @@ class DataValidation:
             logger.info("DataValidation initialised; schema loaded from %s", SCHEMA_FILE_PATH)
             
         except Exception as e:
-            logger.error("Failed to initialise DataValidation: %s", e)
+            logger.error("Failed to initialise Data Validation: %s", e)
             raise NetworkSecurityException(e, sys)
 
     @staticmethod
     def read_data(file_path: str) -> pd.DataFrame:
-        """Read a CSV file into a pandas DataFrame."""
+        """Reads a CSV file into a pandas DataFrame."""
         try:
             logger.info("Reading data from: %s", file_path)
             df = pd.read_csv(file_path)
@@ -41,7 +41,7 @@ class DataValidation:
 
     def _declared_columns(self) -> dict:
         """
-        Flatten the schema's `columns` into {column_name: declared_dtype}.
+        Flattens the schema's `columns` into {column_name: declared_dtype}.
         Handles both a list of single-key dicts (as in this schema.yaml) and a
         plain mapping, so either layout works.
         """
@@ -54,7 +54,7 @@ class DataValidation:
         return merged
 
     def validate_no_of_columns(self, dataframe: pd.DataFrame) -> bool:
-        """Return True if the dataframe has exactly the number of columns the schema declares."""
+        """Returns True if the dataframe has exactly the number of columns the schema declares."""
         try:
             expected = len(self._declared_columns())
             actual = len(dataframe.columns)
@@ -68,7 +68,7 @@ class DataValidation:
 
     def validate_numerical_columns(self, dataframe: pd.DataFrame) -> bool:
         """
-        Return True if every column under `numerical_columns` exists and is numeric.
+        Returns True if every column under `numerical_columns` exists and is numeric.
         Accepts ANY numeric dtype (int64, int32, float64, ...), not just int64.
         """
         try:
@@ -93,7 +93,7 @@ class DataValidation:
 
     def detect_dataset_drift(self, base_df: pd.DataFrame, current_df: pd.DataFrame, threshold: float = 0.05) -> bool:
         """
-        Run a KS test per numeric column and write a drift report.
+        Runs a KS test per numeric column and write a drift report.
         Returns True when no column drifts (every p-value >= threshold).
         Non-numeric columns are skipped, since the KS test needs numbers.
         """
@@ -126,7 +126,7 @@ class DataValidation:
 
 
     def initiate_data_validation(self) -> DataValidationArtifact:
-        """Run the full validation flow and return the resulting DataValidationArtifact."""
+        """Runs the full validation flow and returns the resulting DataValidationArtifact"""
         try:
             logger.info("Starting data validation")
             train_dataframe = DataValidation.read_data(self.data_ingestion_artifact.train_file_path)
